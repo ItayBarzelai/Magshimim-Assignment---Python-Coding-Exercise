@@ -1,0 +1,3 @@
+class STATUS_CODES:
+    OK = 200
+    FILE_NOT_FOUND = 404

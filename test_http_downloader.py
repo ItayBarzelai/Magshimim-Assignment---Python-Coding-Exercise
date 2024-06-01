@@ -1,6 +1,7 @@
 import unittest
 import os
 from HTTPDownloader import HTTPDownloader
+import CONSTS
 
 class TestHTTPDownloader(unittest.TestCase):
     """
@@ -33,12 +34,12 @@ class TestHTTPDownloader(unittest.TestCase):
         """
         pass
 
-    def test_200_status_code(self):
+    def test_ok_status_code(self):
         """
-        test if status code is 200
+        test if status code is 200 (OK)
         """
         for file in self.files:
-            self.assertEqual(file.res.status_code, 200)
+            self.assertEqual(file.res.status_code, CONSTS.STATUS_CODES.OK)
 
     def test_file_not_found(self):
         """

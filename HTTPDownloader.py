@@ -1,5 +1,6 @@
 import requests
 from pypdf import PdfReader
+import CONSTS
 
 class HTTPDownloader:
     """
@@ -17,9 +18,9 @@ class HTTPDownloader:
         except Exception as exception:
             if type(exception) is requests.exceptions.ConnectionError:
                 raise Exception("Can't be reached")
-        if self.res.status_code == 404:
+        if self.res.status_code == CONSTS.STATUS_CODES.FILE_NOT_FOUND:
             raise Exception("File not found")
-        elif self.res.status_code != 200:
+        elif self.res.status_code != CONSTS.STATUS_CODES.OK:
             raise Exception("Download failed")
 
     def save_file(self, name=None, path=None):
