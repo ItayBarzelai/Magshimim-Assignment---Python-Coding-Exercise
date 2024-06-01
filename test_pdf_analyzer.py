@@ -1,12 +1,20 @@
 import unittest
 import os
-from PdfFile import PdfFile
-from DownloadFile import DownloadFile
+from PdfAnalyzer import PdfAnalyzer
+from HTTPDownloader import HTTPDownloader
 from datetime import datetime
 
-class TestPdfFile(unittest.TestCase):
+class TestPdfAnalyzer(unittest.TestCase):
+    """
+    unittest class that will run the pdf analyzer related tests 
+    """
     @classmethod
     def setUpClass(cls):
+        """
+        setUpClass method that will run once before all tests
+        - gather the info that is required to compare for each document
+        - download and save test files
+        """
         cls.pdfs_info = [
             {
                 'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
@@ -32,34 +40,50 @@ class TestPdfFile(unittest.TestCase):
         ]
 
         cls.files = [
-            DownloadFile(url['url']) for url in cls.pdfs_info
+            HTTPDownloader(url['url']) for url in cls.pdfs_info
         ]
 
         for file in cls.files:
             file.save_file()
 
         cls.pdfs = [
-            PdfFile(file.path) for file in cls.files
+            PdfAnalyzer(file.path) for file in cls.files
         ]
         
     @classmethod
     def tearDownClass(cls):
+        """
+        tearDownClass method that will run once after all tests
+        - delete all test files
+        """
         for file in cls.files:
             os.remove(file.path)
 
     def test_author(self):
+        """
+        test if author is correct
+        """
         for pdf, pdf_url in zip(self.pdfs, self.pdfs_info):
             self.assertEqual(pdf.get_author(), pdf_url['author'])
 
     def test_title(self):
+        """
+        test if title is correct
+        """
         for pdf, pdf_url in zip(self.pdfs, self.pdfs_info):
             self.assertEqual(pdf.get_title(), pdf_url['title'])
 
     def test_legth(self):
+        """
+        test if length of document is correct
+        """
         for pdf, pdf_url in zip(self.pdfs, self.pdfs_info):
             self.assertEqual(pdf.get_length(), pdf_url['length'])
     
     def test_creation_date(self):
+        """
+        test if creation date (accuracy of a day) is correct
+        """
         for pdf, pdf_url in zip(self.pdfs, self.pdfs_info):
             try:
                 self.assertEqual(pdf.get_creation_date().year, pdf_url['creation_date'].year)
@@ -69,13 +93,22 @@ class TestPdfFile(unittest.TestCase):
                 self.assertEqual(pdf.get_creation_date(), None)
 
     def test_file_extension_pdf(self):
+        """
+        test if the file extension is pdf
+        """
         for file in self.files:
             self.assertEqual(file.path.split('.')[-1], 'pdf')
     
     def test_pdf_validity(self):
+        """
+        test if the pdf file is valid
+        """
         for file in self.files:
             self.assertTrue(file.is_valid_pdf())
 
 
 if __name__ == '__main__':
+    """
+    run only if this file is called directly
+    """
     unittest.main()
