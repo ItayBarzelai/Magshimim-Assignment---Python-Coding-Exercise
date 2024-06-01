@@ -14,8 +14,8 @@ class HTTPDownloader:
         self.url = url
         try:
             self.res = requests.get(url)
-        except Exception as e:
-            if type(e) is requests.exceptions.ConnectionError:
+        except Exception as exception:
+            if type(exception) is requests.exceptions.ConnectionError:
                 raise Exception("Can't be reached")
         if self.res.status_code == 404:
             raise Exception("File not found")
